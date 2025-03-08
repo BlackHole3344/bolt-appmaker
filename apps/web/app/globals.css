@@ -40,11 +40,64 @@ a {
   html {
     color-scheme: dark;
   }
-
   .imgLight {
     display: none;
   }
   .imgDark {
     display: unset;
   }
+}
+
+/* Glass shine effect animations */
+.glass-shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 80%);
+  transform: rotate(30deg);
+  pointer-events: none;
+  opacity: 0;
+  animation: shine 3s ease-in-out infinite;
+}
+
+.hover-glass-shine {
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  right: -100%;
+  bottom: -100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%);
+  transform: rotate(30deg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.glass-effect:hover .hover-glass-shine {
+  opacity: 1;
+}
+
+@keyframes shine {
+  0% {
+    opacity: 0;
+    transform: translateY(100%) translateX(-50%) rotate(30deg);
+  }
+  20% {
+    opacity: 0.2;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%) translateX(50%) rotate(30deg);
+  }
+}
+
+/* You might also need to add this class to ensure the glass effect container works properly */
+.glass-effect {
+  position: relative;
+  overflow: hidden;
 }
