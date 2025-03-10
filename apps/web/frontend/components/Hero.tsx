@@ -30,7 +30,7 @@ const Hero = () => {
       <div className="container mx-auto px-4 pt-16 text-center">
         <div className="relative overflow-hidden inline-block">
           <h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in-up bg-gradient-to-t from-white/40 to-white bg-clip-text text-transparent z-10 relative"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in-up bg-gradient-to-t from-white/20 to-white bg-clip-text text-transparent z-10 relative"
             style={{ animationDelay: "0.1s" }}
           >
             Idea to app in seconds.

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { TwitterIcon, LinkedinIcon, DiscordIcon } from "./Icons";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { Signup } from "./auth/signUp/signupDialog";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -24,8 +25,8 @@ const Navbar = () => {
       <div className="container flex justify-between items-center py-4">
         <div className="flex items-center">
           <a href="/" className="flex items-center mr-8">
-            <HeartIcon className="h-6 w-6 mr-2" />
-            <span className="font-bold text-lg">lovable</span>
+            <Code className="h-6 w-6 mr-2" />
+            <span className="font-bold text-lg">Beyond-Code</span>
           </a>
           
           <div className="hidden md:flex space-x-6">
@@ -53,7 +54,11 @@ const Navbar = () => {
           
           <div className="flex space-x-2">
             <Button variant="ghost" className="text-sm">Sign in</Button>
-            <Button variant="outline" className="text-sm bg-transparent ">Sign up</Button>
+            <div>
+            {/* <Button variant="outline" className="text-sm bg-transparent ">Sign up</Button> */}
+            <Signup/> 
+            </div>
+            
           </div>
         </div>
       </div>
@@ -72,7 +77,7 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
   );
 };
 
-const HeartIcon = ({ className }: { className?: string }) => {
+const Code = ({ className }: { className?: string }) => {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -81,18 +86,34 @@ const HeartIcon = ({ className }: { className?: string }) => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-        fill="url(#heart-gradient)"
+        d="M9.5 4L4.5 12L9.5 20"
+        stroke="url(#code-left)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14.5 4L19.5 12L14.5 20"
+        stroke="url(#code-right)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <defs>
-        <linearGradient id="heart-gradient" x1="2" y1="3" x2="22" y2="21" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#3B82F6" />
-          <stop offset="0.5" stopColor="#8B5CF6" />
-          <stop offset="1" stopColor="#EC4899" />
+        <linearGradient id="code-left" x1="4.5" y1="4" x2="9.5" y2="20" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#60A5FA" />
+          <stop offset="0.5" stopColor="#A78BFA" />
+          <stop offset="1" stopColor="#F472B6" />
+        </linearGradient>
+        <linearGradient id="code-right" x1="19.5" y1="4" x2="14.5" y2="20" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#F472B6" />
+          <stop offset="0.5" stopColor="#A78BFA" />
+          <stop offset="1" stopColor="#60A5FA" />
         </linearGradient>
       </defs>
     </svg>
   );
 };
+
 
 export default Navbar;
