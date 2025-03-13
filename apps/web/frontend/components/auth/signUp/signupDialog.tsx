@@ -155,7 +155,7 @@ export function Signup() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full  text-gray-300"
+                className="w-full  text-black"
               >
                 {isLoading ? "Creating account..." : "Create account"}
               </Button>
