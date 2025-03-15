@@ -52,14 +52,13 @@ const Navbar = () => {
             </a>
           </div>
           
-          <div className="flex space-x-2">
+          {/* <div className="flex space-x-2">
             <Button variant="ghost" className="text-sm">Sign in</Button>
             <div>
-            {/* <Button variant="outline" className="text-sm bg-transparent ">Sign up</Button> */}
             <Signup/> 
             </div>
             
-          </div>
+          </div> */}
         </div>
       </div>
     </nav>

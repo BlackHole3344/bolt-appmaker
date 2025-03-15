@@ -2,12 +2,18 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import axios from "axios";
+import { CREATE_PROJECT } from "@/config/project";
 
 const Hero = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [prompt, setPrompt] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const router = useRouter();
 
-  // Auto-resize textarea
+  // auto-resize textarea
   const resizeTextarea = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -21,6 +27,42 @@ const Hero = () => {
     window.addEventListener("resize", resizeTextarea);
     return () => window.removeEventListener("resize", resizeTextarea);
   }, []);
+
+  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPrompt(e.target.value);
+    resizeTextarea();
+  };
+
+  const handleGenerate = () => {
+    if (prompt.trim()) {
+
+
+      const token = useAuth() ; 
+       
+
+      const response = axios.post(CREATE_PROJECT , {
+        title : prompt , 
+        description  : "good" 
+
+      } ,)
+      const workspaceId = generateUniqueId();
+      
+      // Store the prompt in localStorage if needed
+      localStorage.setItem(`workspace_${workspaceId}`, prompt);
+      
+      // Navigate to the dynamic workspace route
+      router.push(`/workspace/${workspaceId}`);
+    }
+  };
+  
+  // Helper function to generate a unique ID
+  const generateUniqueId = () => {
+    // Simple UUID-like generator
+    return 'wxs_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 7);
+    
+    // Alternatively, use a library like uuid if available
+    // return uuidv4();
+  };
 
   return (
     <section className="pt-32 pb-20 relative overflow-hidden">
@@ -74,11 +116,12 @@ const Hero = () => {
 
             <textarea
               ref={textareaRef}
-              placeholder="Ask Lovable to create a landing page..."
+              placeholder="Ask Beyond-code to create a landing page..."
               className="w-full bg-transparent text-white/90 p-4 outline-none resize-none min-h-[100px]"
               onFocus={() => setIsInputFocused(true)}
               onBlur={() => setIsInputFocused(false)}
-              onChange={resizeTextarea}
+              onChange={handlePromptChange}
+              value={prompt}
               rows={1}
             />
 
@@ -105,6 +148,7 @@ const Hero = () => {
                       variant="default"
                       size="sm"
                       className="text-xs bg-white/10 hover:bg-white/20 text-white z-10 relative"
+                      onClick={handleGenerate}
                     >
                       Generate
                     </Button>
@@ -113,11 +157,6 @@ const Hero = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="hover-glass-shine"></div>
-                  </div> */}
-                {/* <GlobeIcon className="h-4 w-4 mr-1" /> Public
-                </Button> */}
               </div>
             </div>
           </div>
