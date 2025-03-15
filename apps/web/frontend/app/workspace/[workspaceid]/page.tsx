@@ -1,31 +1,20 @@
-"use client";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import ChatView from "../../../components/workspaceComps/chatview";
-import CodeView from "../../../components/workspaceComps/codeview";
+import axios from "axios";
+import { K8S_ORCHESTRATOR_URL } from "@/config/backend";
+import ProjectWithInitRequest from "@/components/project/ProjectWithInitRequest";
 
-export default function WorkspacePage() {
-  const { workspaceId } = useParams();
-  const [prompt, setPrompt] = useState<string>("");
+interface Params {
+	params: Promise<{ projectId: string }>
+}
 
-  useEffect(() => {
-    // Retrieve the stored prompt from localStorage if available
-    const storedPrompt = localStorage.getItem(`workspace_${workspaceId}`);
-    if (storedPrompt) {
-      setPrompt(storedPrompt);
-    }
-    // You could also fetch workspace data from an API here
-    // fetchWorkspaceData(workspaceId);
-  }, [workspaceId]);
+export default async function ProjectPage({ params }: Params) {
+	const projectId = (await params).projectId
+    const response = await axios.get(`${K8S_ORCHESTRATOR_URL}/worker/${projectId}`);
+	const { sessionUrl, previewUrl, workerUrl } = response.data;
 
-  return (
-    <div className="p-10">
-      <div className="grid grid-cols-1 md:grid-cols-3">
-        <ChatView />
-        <div className="cols-span-2">
-          <CodeView />
-        </div>
-      </div>
-    </div>
-  );
+	return <ProjectWithInitRequest 
+		projectId={projectId} 
+		sessionUrl={sessionUrl} 
+		previewUrl={previewUrl} 
+		workerUrl={workerUrl} 
+	/>
 }

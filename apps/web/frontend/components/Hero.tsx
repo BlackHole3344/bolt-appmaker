@@ -3,6 +3,9 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
+import axios from "axios";
+import { CREATE_PROJECT } from "@/config/project";
 
 const Hero = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -32,7 +35,16 @@ const Hero = () => {
 
   const handleGenerate = () => {
     if (prompt.trim()) {
-      // Generate a unique workspace ID (you can customize this method)
+
+
+      const token = useAuth() ; 
+       
+
+      const response = axios.post(CREATE_PROJECT , {
+        title : prompt , 
+        description  : "good" 
+
+      } ,)
       const workspaceId = generateUniqueId();
       
       // Store the prompt in localStorage if needed
