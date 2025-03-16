@@ -1,17 +1,39 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
+import { motion } from "motion/react";
 import axios from "axios";
 import { CREATE_PROJECT } from "@/config/project";
+import { auth } from "@clerk/nextjs/server";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import dotenv from "dotenv" 
+import PromptBox from "./promptBox"
+dotenv.config() 
 
 const Hero = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [prompt, setPrompt] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
+  const [type, setType] = useState<"REACT" | "REACT_NATIVE" | "NEXT_JS">(
+    "NEXT_JS"
+  );
+  const [SignedIn, setSignedIn] = useState(false);
+  const { getToken } = useAuth();
 
   // auto-resize textarea
   const resizeTextarea = () => {
@@ -33,35 +55,39 @@ const Hero = () => {
     resizeTextarea();
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (prompt.trim()) {
+      const token = await getToken();
 
+      if (!token) {
+        setSignedIn(true);
+        return;
+      }
 
-      const token = useAuth() ; 
-       
-
-      const response = axios.post(CREATE_PROJECT , {
-        title : prompt , 
-        description  : "good" 
-
-      } ,)
-      const workspaceId = generateUniqueId();
+      console.log(token);
       
+      const response = await axios.post(
+        `http://localhost:4000/project` ,
+        {
+          title: prompt.trim(), 
+          description: "good",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+
+
+      const projectId = response.data.projectId;
       // Store the prompt in localStorage if needed
-      localStorage.setItem(`workspace_${workspaceId}`, prompt);
-      
+      localStorage.setItem(`workspace_${projectId}`, prompt);
+
       // Navigate to the dynamic workspace route
-      router.push(`/workspace/${workspaceId}`);
+      router.push(`/workspace/${projectId}`);
     }
-  };
-  
-  // Helper function to generate a unique ID
-  const generateUniqueId = () => {
-    // Simple UUID-like generator
-    return 'wxs_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 7);
-    
-    // Alternatively, use a library like uuid if available
-    // return uuidv4();
   };
 
   return (
@@ -86,86 +112,9 @@ const Hero = () => {
           Beyond-code is your superhuman full stack engineer. Start for free
           today.
         </p>
+       <PromptBox/> 
 
-        <div
-          className="max-w-2xl mx-auto mb-12 animate-fade-in-up"
-          style={{ animationDelay: "0.5s" }}
-        >
-          <div
-            className={cn(
-              "relative prompt-box glass-effect backdrop-blur-md bg-white/5 border border-white/10 rounded-lg transition-all duration-300 overflow-hidden",
-              isInputFocused ? "border-white/30 shadow-lg" : "border-white/10"
-            )}
-          >
-            {/* Standard glass shine animation */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="glass-shine"></div>
-            </div>
-          </div>
-          {/* Hover-triggered glass animation */}
-          <div
-            className={cn(
-              "relative prompt-box glass-effect backdrop-blur-md bg-white/5 border border-white/10 rounded-lg transition-all duration-300 overflow-hidden",
-              isInputFocused ? "border-white/30 shadow-lg" : "border-white/10"
-            )}
-          >
-            {/* Subtle box shine */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="box-shine"></div>
-            </div>
-
-            <textarea
-              ref={textareaRef}
-              placeholder="Ask Beyond-code to create a landing page..."
-              className="w-full bg-transparent text-white/90 p-4 outline-none resize-none min-h-[100px]"
-              onFocus={() => setIsInputFocused(true)}
-              onBlur={() => setIsInputFocused(false)}
-              onChange={handlePromptChange}
-              value={prompt}
-              rows={1}
-            />
-
-            <div className="flex justify-between items-center p-3 border-t border-white/10">
-              <div className="flex space-x-3">
-                <div className="button-wrapper relative overflow-hidden">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-xs bg-transparent border-white/20 hover:bg-white/10 hover:text-white z-10 relative"
-                  >
-                    <AttachIcon className="h-4 w-4 mr-1" /> Attach
-                  </Button>
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="button-shine"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex space-x-3">
-                  <div className="button-wrapper relative overflow-hidden">
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="text-xs bg-white/10 hover:bg-white/20 text-white z-10 relative"
-                      onClick={handleGenerate}
-                    >
-                      Generate
-                    </Button>
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                      <div className="button-shine"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto animate-fade-in-up"
-          style={{ animationDelay: "0.7s" }}
-        >
+        <div>
           <ProjectTypeButton label="Personal website" />
           <ProjectTypeButton label="Slidev presentation" />
           <ProjectTypeButton label="3D product viewer" />

@@ -4,7 +4,15 @@ import { TwitterIcon, LinkedinIcon, DiscordIcon } from "./Icons";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Signup } from "./auth/signUp/signupDialog";
-
+import { AuthControls } from "./authComponent";
+import {
+  SignInButton,
+  SignUpButton,
+  UserButton,
+  SignedIn,
+  SignedOut,
+  useClerk,
+} from "@clerk/nextjs";
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   
@@ -51,14 +59,8 @@ const Navbar = () => {
               <DiscordIcon className="h-5 w-5" />
             </a>
           </div>
-          
-          {/* <div className="flex space-x-2">
-            <Button variant="ghost" className="text-sm">Sign in</Button>
-            <div>
-            <Signup/> 
-            </div>
-            
-          </div> */}
+
+         <AuthControls/> 
         </div>
       </div>
     </nav>
